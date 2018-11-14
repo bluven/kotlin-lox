@@ -26,7 +26,9 @@ fun runFile(path: String) {
         System.exit(127)
     }
 
-    println(File(path).readText())
+//    println(.readText())
+
+    run(File(path).readText())
 
     if (hadError) {
         System.exit(65)
@@ -39,6 +41,15 @@ fun runFile(path: String) {
 
 fun runPrompt() {
     println("Run prompt")
+}
+
+fun run(source: String) {
+    val scanner = Scanner(source)
+    val tokens = scanner.scanTokens()
+
+    tokens.forEach {
+        println(it.type)
+    }
 }
 
 fun error(line: Int, message: String) {
