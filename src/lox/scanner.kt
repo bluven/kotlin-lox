@@ -80,7 +80,7 @@ class Scanner(val source: String) {
                 when {
                     isDigit(c) -> number()
                     isAlpha(c) -> identifier()
-                    else -> error(line, "Unexpected character.")
+                    else -> Lox.error(line, "Unexpected character.")
                 }
         }
     }
@@ -115,7 +115,7 @@ class Scanner(val source: String) {
 
         // Unterminated string.
         if (isAtEnd()) {
-            error(line, "Unterminated string.")
+            Lox.error(line, "Unterminated string.")
             return
         }
 
