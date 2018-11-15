@@ -46,9 +46,12 @@ fun runPrompt() {
 fun run(source: String) {
     val scanner = Scanner(source)
     val tokens = scanner.scanTokens()
+    val parser = Parser(tokens)
 
-    tokens.forEach {
-        println(it.type)
+    val stmts = parser.parse()
+
+    stmts.forEach {
+        println(it.toString())
     }
 }
 
@@ -59,6 +62,14 @@ fun error(line: Int, message: String) {
 fun report(line: Int, where: String, message: String) {
     System.err.println("[line $line] Error$where: $message")
     hadError = true
+}
+
+fun reportError(token: Token, message: String) {
+    if (token.type === TokenType.EOF) {
+        report(token.line, " at end", message)
+    } else {
+        report(token.line, " at '" + token.lexeme + "'", message)
+    }
 }
 
 fun runtimeError(error: RuntimeError) {

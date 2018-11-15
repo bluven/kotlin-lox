@@ -397,7 +397,7 @@ class Parser(val tokens: List<Token>) {
     }
 
     private fun error(token: Token, message: String): ParseError {
-        error(token, message)
+        reportError(token, message)
         return ParseError()
     }
 
