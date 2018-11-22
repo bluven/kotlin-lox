@@ -7,31 +7,28 @@ private class ParseError : Exception()
 class Parser(val tokens: List<Token>) {
     var current = 0
 
-    internal fun parse(): List<Stmt?> {
-        val statements = mutableListOf<Stmt?>()
+    internal fun parse(): List<Stmt> {
+        val statements = mutableListOf<Stmt>()
 
         while (!isAtEnd()) {
-            statements.add(declaration())
+            try {
+                statements.add(declaration())
+            } catch (err: ParseError) {
+                synchronize()
+            }
         }
 
         return statements
     }
 
-    private fun declaration(): Stmt? {
-        return try {
-            when {
-                match(CLASS) -> classDeclaration()
-                match(FUN) -> function("function")
-                match(VAR) -> varDeclaration()
-                else -> statement()
-            }
-        } catch (error: ParseError) {
-            synchronize()
-            null
-        }
+    private fun declaration() = when {
+        match(CLASS) -> classDeclaration()
+        match(FUN) -> function("function")
+        match(VAR) -> varDeclaration()
+        else -> statement()
     }
 
-    private fun classDeclaration(): Stmt? {
+    private fun classDeclaration(): Stmt {
         val name = consume(IDENTIFIER, "Expect class name.")
 
         if (match(LESS)) {

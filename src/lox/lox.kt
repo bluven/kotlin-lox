@@ -2,11 +2,12 @@ package lox
 
 import java.io.File
 
-class RuntimeError(message: String, val token: Token): Exception(message)
+class RuntimeError(val token: Token, message: String): Exception(message)
 
 object Lox {
     var hadError = false
     var hadRuntimeError = false
+    private val interpreter = Interpreter()
 
     fun runFile(path: String) {
         val file = File(path)
@@ -15,8 +16,6 @@ object Lox {
             System.err.println("$path not found.")
             System.exit(127)
         }
-
-    //    println(.readText())
 
         run(File(path).readText())
 
@@ -33,16 +32,21 @@ object Lox {
         println("Run prompt")
     }
 
-    fun run(source: String) {
+    private fun run(source: String) {
         val scanner = Scanner(source)
         val tokens = scanner.scanTokens()
         val parser = Parser(tokens)
 
         val stmts = parser.parse()
 
-        stmts.forEach {
-            println(it.toString())
-        }
+        if (hadError) return
+
+        val resolver = Resolver(interpreter)
+        resolver.resolve(stmts)
+
+        if (hadError) return
+
+        interpreter.interpret(stmts)
     }
 
     fun error(line: Int, message: String) {

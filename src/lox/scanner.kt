@@ -2,7 +2,7 @@ package lox
 
 import lox.TokenType.*
 
-val NULL_CHAR = 0.toChar()
+const val NULL_CHAR = 0.toChar()
 
 val KEYWORDS = mapOf(
     "and" to AND,
@@ -25,7 +25,7 @@ val KEYWORDS = mapOf(
 
 
 class Scanner(val source: String) {
-    val tokens: MutableList<Token> = mutableListOf()
+    private val tokens: MutableList<Token> = mutableListOf()
     var start = 0
     var current = 0
     var line = 1
@@ -145,7 +145,7 @@ class Scanner(val source: String) {
             return NULL_CHAR
         }
 
-        return source[current + 1];
+        return source[current + 1]
     }
 
     private fun isAlpha(c: Char): Boolean {
